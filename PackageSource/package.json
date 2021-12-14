@@ -1,0 +1,17 @@
+{
+  "name": "com.tsw.meshfragmentation",
+  "version": "1.0.0",
+  "displayName": "Mesh Fragmentation",
+  "description": "Fragment a mesh and simulate an explosion",
+  "unity": "2020.3",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://github.com/vthem/MeshFragmentation",
+  "changelogUrl": "https://github.com/vthem/MeshFragmentation",
+  "licensesUrl": "https://github.com/vthem/MeshFragmentation/blob/main/LICENSE",
+  "keywords": [],
+  "author": {
+    "name": "Vincent Themereau",
+    "url": "https://github.com/vthem"
+  },
+  "hideInEditor": false
+}
