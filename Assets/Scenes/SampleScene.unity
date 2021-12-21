@@ -394,14 +394,20 @@ MonoBehaviour:
   spreadforce: 1.5
   duration: 3
   drag: 3
-  maxArea: 1
   minAngularVelocity: 30
   maxAngularVelocity: 90
   spreadings:
-  - quantity: 1
+  - quantity: 0.1
     minConeRadius: 0
     maxConeRadius: 1
     coneRingDistance: 0.1
+    minForce: 1
+    maxForce: 2
+    debugColor: {r: 0.122380376, g: 1, b: 0, a: 1}
+  - quantity: 1
+    minConeRadius: 0
+    maxConeRadius: 1
+    coneRingDistance: 1
     minForce: 1
     maxForce: 2
     debugColor: {r: 1, g: 0.29771385, b: 0, a: 1}

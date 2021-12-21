@@ -13,8 +13,7 @@ namespace TSW
         public float gravity = 9.81f;
         public float spreadforce = 1f;
         public float duration = 5f;
-        public float drag = 3f;
-        public float maxArea = 1f;
+        public float drag = 3f;        
         public float minAngularVelocity;
         public float maxAngularVelocity;
         public Spreading[] spreadings = new Spreading[0];
@@ -75,13 +74,13 @@ namespace TSW
             _jobRemainingTime = duration;
             var localSpreadDirection = transform.InverseTransformDirection(spreadDirection);
             SpreadingIterator spreadingIterator = new SpreadingIterator(spreadings, fragCount);
+            _maxArea = 0f;
             for (int i = 0; i < fragCount; ++i) {
                 var spreading = spreadingIterator.Next();
                 var frag = _meshFragmenting[i];
                 var explosion = _fragmentExplosionDataArray[i];
                 explosion.velocity = spreading.GetRandomDirection(localSpreadDirection) * spreadforce * Random.Range(spreading.minForce, spreading.maxForce);
-                var area = frag.Area;
-                explosion.drag = drag * area / maxArea;
+                _maxArea = Mathf.Max(_maxArea, frag.Area);
                 explosion.angularVelocity = new Vector3(
                     Random.Range(minAngularVelocity, maxAngularVelocity),
                     Random.Range(minAngularVelocity, maxAngularVelocity),
@@ -128,12 +127,12 @@ namespace TSW
         private MeshFragmenting _meshFragmenting = new MeshFragmenting();
         private bool _initialized = false;
         private Mesh _originalMesh = null;
+        private float _maxArea = 0f;
 
         private struct FragmentExplosionData
         {
             public Vector3 velocity;
             public Vector3 angularVelocity;
-            public float drag;
         }
 
         private struct FragmentExplosionJob : IJobParallelFor
@@ -144,13 +143,16 @@ namespace TSW
             [ReadOnly] public float gravity;
             [ReadOnly] public float duration;
             [ReadOnly] public float remainingTime;
+            [ReadOnly] public float drag;
+            [ReadOnly] public float maxAera;
 
             public void Execute(int index) {
                 MeshFragmenting.FragmentData frag = fragDataArray[index];
                 FragmentExplosionData explosion = fragExplosionDataArray[index];
                 var dir = explosion.velocity.normalized;
                 explosion.velocity += Vector3.down * gravity * deltaTime;
-                explosion.velocity -= dir * explosion.drag * deltaTime;
+                var fragDrag = drag * frag.Area / maxAera;
+                explosion.velocity -= dir * fragDrag * deltaTime;
 
                 frag.position += explosion.velocity * deltaTime;
                 frag.rotation *= Quaternion.Euler(explosion.angularVelocity * deltaTime);
@@ -174,6 +176,8 @@ namespace TSW
             explosionJob.duration = duration;
             explosionJob.remainingTime = _jobRemainingTime;
             explosionJob.gravity = gravity;
+            explosionJob.maxAera = _maxArea;
+            explosionJob.drag = drag;
 
             var explosionHandle = explosionJob.Schedule(_meshFragmenting.Count, 64);
 
