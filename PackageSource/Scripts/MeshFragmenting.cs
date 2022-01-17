@@ -52,10 +52,6 @@ namespace TSW
 
             var triangles = _sourceMesh.triangles;
             var sourceVertices = _sourceMesh.vertices;
-            if (triangles.Length == sourceVertices.Length) {
-                Debug.Log("mesh already split");
-                return null;
-            }
 
             var vertexCount = triangles.Length;
             var subMeshCount = _sourceMesh.subMeshCount;

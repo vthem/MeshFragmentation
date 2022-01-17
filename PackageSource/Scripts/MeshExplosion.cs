@@ -17,6 +17,7 @@ namespace TSW
         public float minAngularVelocity;
         public float maxAngularVelocity;
         public Spreading[] spreadings = new Spreading[0];
+        public bool destroyOnEnd = false;
 
         [System.Serializable]
         public struct Spreading
@@ -28,9 +29,11 @@ namespace TSW
             public float minForce;
             public float maxForce;
             public Color debugColor;
+            public float minAngle;
+            public float maxAngle;
 
             public Vector3 GetRandomDirection(Vector3 mainDirection) {
-                Vector3 randomInCircleRing = (Quaternion.AngleAxis(Random.Range(0f, 180f), Vector3.forward) * Vector3.right) * Random.Range(minConeRadius, maxConeRadius);
+                Vector3 randomInCircleRing = (Quaternion.AngleAxis(Random.Range(minAngle, maxAngle), Vector3.forward) * Vector3.right) * Random.Range(minConeRadius, maxConeRadius);
                 Quaternion rot = Quaternion.FromToRotation(Vector3.forward, mainDirection);
                 return ((rot * randomInCircleRing) + mainDirection * coneRingDistance).normalized;
             }
@@ -44,6 +47,8 @@ namespace TSW
                     s.coneRingDistance = 1f;
                     s.minForce = 1f;
                     s.maxForce = 1f;
+                    s.minAngle = 0f;
+                    s.maxAngle = 180f;
                     s.debugColor = Color.red;
                     return s;
                 }
@@ -186,8 +191,10 @@ namespace TSW
 
         private void Update() {
             _jobRemainingTime -= Time.deltaTime;
+            if (_initialized && _jobRemainingTime <= 0f && destroyOnEnd)
+                GameObject.Destroy(gameObject);
             if (!_initialized || _jobRemainingTime <= 0f)
-                return;
+                return;            
             ScheduleJob();
         }
 
@@ -196,7 +203,7 @@ namespace TSW
             _meshFragmenting.Complete();
         }
 
-        private void OnDrawGizmos() {
+        private void OnDrawGizmosSelected() {
             Random.InitState(0);
             SpreadingIterator spreadingIterator = new SpreadingIterator(spreadings, 100);
 
