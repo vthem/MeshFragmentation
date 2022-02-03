@@ -1,6 +1,6 @@
 {
   "name": "com.tsw.meshfragmentation",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Mesh Fragmentation",
   "description": "Fragment a mesh and simulate an explosion",
   "unity": "2020.3",
