@@ -1,6 +1,6 @@
 # Mesh Fragmentation
 
-Fragment a mesh and simulate an explosion. 
+Fragment a mesh and simulate an explosion. [Live demo here](https://vthem.github.io/MeshFragmentation/).
 
 ![](Readme/Monkey.png)
 
